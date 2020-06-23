@@ -1,0 +1,19 @@
+# github.com/inconshreveable/mousetrap v1.0.0
+github.com/inconshreveable/mousetrap
+# github.com/konsorten/go-windows-terminal-sequences v1.0.3
+github.com/konsorten/go-windows-terminal-sequences
+# github.com/mitchellh/mapstructure v1.3.2
+github.com/mitchellh/mapstructure
+# github.com/pandaoc-io/go-shinken-check v0.2.1
+github.com/pandaoc-io/go-shinken-check
+# github.com/sirupsen/logrus v1.6.0
+github.com/sirupsen/logrus
+# github.com/soniah/gosnmp v1.25.0
+github.com/soniah/gosnmp
+# github.com/spf13/cobra v1.0.0
+github.com/spf13/cobra
+# github.com/spf13/pflag v1.0.3
+github.com/spf13/pflag
+# golang.org/x/sys v0.0.0-20200622214017-ed371f2e16b4
+golang.org/x/sys/unix
+golang.org/x/sys/internal/unsafeheader
