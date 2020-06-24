@@ -114,7 +114,7 @@ func FetchAllDatas(snmpConnection *g.GoSNMP, index string, version string, cmd *
 		}
 		if elem == "IfAlias" {
 			log.Debug("Replace the characters of the alias '|' by '!'")
-			*networkinterface.IfAlias = strings.Replace(*networkinterface.IfAlias, "|", "!", -1)
+			*networkinterface.IfAlias = strings.ReplaceAll(*networkinterface.IfAlias, "|", "!")
 		}
 	}
 	networkinterface.Timestamp = (time.Now().Unix())
