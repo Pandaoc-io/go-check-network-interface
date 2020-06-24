@@ -98,7 +98,7 @@ func networkInterfaceCheck(snmpVersion string, cmd *cobra.Command, args []string
 		sknchk.Unknown(fmt.Sprintf("Error while Creating SNMP connection : %v", err), "")
 	}
 	file.DevicePath = file.GenDeviceDirName(snmpVersion, cmd)
-	intFilename := cmd.Flag("interface").Value.String() + ".json"
+	intFilename := strings.ReplaceAll(cmd.Flag("interface").Value.String(), "/", "_") + ".json"
 
 	//Check and prepare the index file
 	indexFileExp, _ := cmd.Flags().GetInt("index-expiration")
