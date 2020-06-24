@@ -105,7 +105,10 @@ func networkInterfaceCheck(snmpVersion string, cmd *cobra.Command, args []string
 	asExp := false
 	err = file.CheckFileExist(file.DevicePath, "index.json")
 	if err == nil {
-		asExp = file.AsExp(file.DevicePath, "index.json", time.Duration(indexFileExp)*time.Minute)
+		asExp, err = file.AsExp(file.DevicePath, "index.json", time.Duration(indexFileExp)*time.Minute)
+		if err != nil {
+			sknchk.Unknown(fmt.Sprintf("Error while accessing Index file : %v", err), "")
+		}
 		if asExp {
 			log.Debugln("Regeneration of the file...")
 		}
