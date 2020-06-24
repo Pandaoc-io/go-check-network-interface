@@ -57,12 +57,12 @@ func CreatePath(fPath string) error {
 }
 
 //AsExp check if the file is older than the given expiration duration
-func AsExp(devicePath string, filename string, exptime time.Duration) bool {
+func AsExp(devicePath string, filename string, exptime time.Duration) (bool, error) {
 	log.Debugln("===== File expiration check =====")
 	file, err := os.Stat(path.Join(devicePath, filename))
 	log.Debugf("Tested file : %v", path.Join(devicePath, filename))
 	if err != nil {
-		return false
+		return false, err
 	}
 	log.Debugf("Expiration delay : %v", exptime)
 	modifiedtime := file.ModTime()
@@ -71,10 +71,10 @@ func AsExp(devicePath string, filename string, exptime time.Duration) bool {
 	log.Debugf("Last modification time : %s ago", elapsed)
 	if elapsed > exptime {
 		log.Debugln("The file have expired")
-		return true
+		return true, nil
 	}
 	log.Debugln("The file haven't expired")
-	return false
+	return false, nil
 }
 
 //CreateJSONFile will create a json file bases on the interface{} datas.
