@@ -30,7 +30,7 @@ import (
 
 //TableTmpl is the HTML code to generate the table into the long output
 const TableTmpl = `
-<table style="width: 100%; border-collapse: collapse; border-color: #000000; margin-left: auto; margin-right: auto; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;" border="1">
+<table style="width: 90%; border-collapse: collapse; border-color: #000000; margin-left: auto; margin-right: auto; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;" border="1">
             <tbody>
               <tr>
                 <th colspan="6" style="color: #2160c4; background-color: #eef3fc; padding: 5; text-align: center;">Name : {{if .IfName}}{{.IfName}}{{else}}No name found{{end}} - Desc : {{if .IfDescr}}{{.IfDescr}}{{else}}No description found{{end}}</th>
@@ -112,9 +112,9 @@ const TableTmpl = `
               </tr>
               <tr>
                 <td rowspan="3" style="padding: 5;">{{if .IfInTotalPktsRate}}Total: {{Float2f .IfInTotalPktsRate}} pps<br><br>
-                {{if .InUniPcktRate}}Unicast: {{Float2f .InUniPcktRate}} pps<br>{{end -}}
-                {{if .InMultiPcktRate}}Multicast: {{Float2f .InMultiPcktRate}} pps<br>{{end -}}
-                {{if .InBroadPcktRate}}Broadcast: {{Float2f .InBroadPcktRate}} pps{{end -}}{{end -}}
+                {{if .InUniPcktRate}}&#10148; Unicast: {{Float2f .InUniPcktRate}} pps<br>{{end -}}
+                {{if .InMultiPcktRate}}&#10148; Multicast: {{Float2f .InMultiPcktRate}} pps<br>{{end -}}
+                {{if .InBroadPcktRate}}&#10148; Broadcast: {{Float2f .InBroadPcktRate}} pps{{end -}}{{end -}}
                 </td>
                 {{if and (eq ErrUnitThreshold "pps") .IfInErrorsRate -}}
                   {{if eq (CompPnF .IfInErrorsRate ErrCritThreshold) 1 -}}
@@ -136,9 +136,9 @@ const TableTmpl = `
                   <td style="padding: 5;">N/A</td>
                 {{end -}}
                 <td rowspan="3" style="padding: 5;">{{if .IfOutTotalPktsRate}}Total : {{Float2f .IfOutTotalPktsRate}} pps<br><br>
-                {{if .OutUniPcktRate}}Unicast: {{Float2f .OutUniPcktRate}} pps<br>{{end -}}
-                {{if .OutMultiPcktRate}}Multicast: {{Float2f .OutMultiPcktRate}} pps<br>{{end -}}
-                {{if .OutBroadPcktRate}}Broadcast: {{Float2f .OutBroadPcktRate}} pps<br>{{end -}}{{end -}}
+                {{if .OutUniPcktRate}}&#10148; Unicast: {{Float2f .OutUniPcktRate}} pps<br>{{end -}}
+                {{if .OutMultiPcktRate}}&#10148; Multicast: {{Float2f .OutMultiPcktRate}} pps<br>{{end -}}
+                {{if .OutBroadPcktRate}}&#10148; Broadcast: {{Float2f .OutBroadPcktRate}} pps<br>{{end -}}{{end -}}
                 </td>
                 {{if and (eq ErrUnitThreshold "pps") .IfOutErrorsRate -}}
                   {{if eq (CompPnF .IfOutErrorsRate ErrCritThreshold) 1 -}}

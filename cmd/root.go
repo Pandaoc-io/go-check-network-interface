@@ -60,8 +60,8 @@ func init() {
 	rootCmd.PersistentFlags().IntP("retry", "r", 3, "Number of retry of the SNMP requests")
 	rootCmd.PersistentFlags().BoolP("verbose", "v", false, "Activate the verbose mode to display more debuging information")
 
-	rootCmd.PersistentFlags().Float64("bandwidth-warning", 80, "Warning threshold of the Bandwidth usage (in %%)")
-	rootCmd.PersistentFlags().Float64("bandwidth-critical", 90, "Critical threshold of the Bandwidth usage (in %%)")
+	rootCmd.PersistentFlags().String("bandwidth-warning", "80%", "Warning threshold of the Bandwidth usage (in %%)")
+	rootCmd.PersistentFlags().String("bandwidth-critical", "90%", "Critical threshold of the Bandwidth usage (in %%)")
 
 	rootCmd.PersistentFlags().String("error-warning", "50pps", "Warning threshold of the Errors (in %% or pps)")
 	rootCmd.PersistentFlags().String("error-critical", "100pps", "Critical threshold of the Errors (in %% or pps)")
