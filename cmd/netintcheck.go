@@ -173,13 +173,15 @@ func networkInterfaceCheck(snmpVersion string, cmd *cobra.Command, args []string
 
 	//Check if interface is admin down, in that no need to process other information.
 	if intNewData.IfAdminStatus != nil && *intNewData.IfAdminStatus == netint.DOWN {
-		sknchk.Critical(`The interface is administratively <span style="color: hsl(348, 86%%, 61%%);">DOWN</span>`, "")
+		sknchk.Critical(fmt.Sprintf("The interface is administratively %v",
+			sknchk.FmtCritical("DOWN")), "")
 	}
 	if intNewData.IfOperStatus != nil {
 		for _, st := range []uint{2, 3, 4, 5, 6, 7} {
 			if st == *intNewData.IfOperStatus {
 				operStStrg := netint.OperToString(st)
-				sknchk.Critical(fmt.Sprintf(`The interface status is <span style="color: hsl(348, 86%%, 61%%);">%v</span> (oper), <span style="color: hsl(348, 86%%, 61%%);">UP</span> (admin)`, operStStrg), "")
+				sknchk.Critical(fmt.Sprintf("The interface status is %v (oper), %v (admin)",
+					sknchk.FmtCritical(operStStrg), sknchk.FmtOk("UP")), "")
 			}
 		}
 	}
