@@ -38,10 +38,10 @@ const (
 	PrefixCliWarning   string = "[WARNING]"
 	PrefixCliCritical  string = "[CRITICAL]"
 	PrefixCliUnknown   string = "[UNKNOWN]"
-	PrefixHTMLOk       string = `<span style="color:white; background-color: #28a745; display: inline-block; padding: .25em .4em; font-size: 75%; font-weight: 700; line-height: 1; text-align: center; white-space: nowrap; vertical-align: baseline; border-radius: .25rem;">OK</span>`
-	PrefixHTMLWarning  string = `<span style="color:#212529; background-color: #ffc107; display: inline-block; padding: .25em .4em; font-size: 75%; font-weight: 700; line-height: 1; text-align: center; white-space: nowrap; vertical-align: baseline; border-radius: .25rem;">Warning</span>`
-	PrefixHTMLCritical string = `<span style="color:white; background-color: #dc3545; display: inline-block; padding: .25em .4em; font-size: 75%; font-weight: 700; line-height: 1; text-align: center; white-space: nowrap; vertical-align: baseline; border-radius: .25rem;">Critical</span>`
-	PrefixHTMLUnknown  string = `<span style="color:white; background-color: #6c757d; display: inline-block; padding: .25em .4em; font-size: 75%; font-weight: 700; line-height: 1; text-align: center; white-space: nowrap; vertical-align: baseline; border-radius: .25rem;">Unknown</span>`
+	PrefixHTMLOk       string = `<span style="align-items: center; background-color: #28a745; border-radius: 4px; color: white; display: inline-flex; font-size: 12px; height: 2rem; justify-content: center; line-height: 1.5; padding-left: .75rem; padding-right: .75rem; white-space: nowrap; margin-top: 0.25rem; margin-left: .25rem;">OK</span>`
+	PrefixHTMLWarning  string = `<span style="align-items: center; background-color: #ffc107; border-radius: 4px; color: #212529; display: inline-flex; font-size: 112px; height: 2rem; justify-content: center; line-height: 1.5; padding-left: .75rem; padding-right: .75rem; white-space: nowrap; margin-top: 0.25rem; margin-left: .25rem;">Warning</span>`
+	PrefixHTMLCritical string = `<span style="align-items: center; background-color: #dc3545; border-radius: 4px; color: white; display: inline-flex; font-size: 12px; height: 2rem; justify-content: center; line-height: 1.5; padding-left: .75rem; padding-right: .75rem; white-space: nowrap; margin-top: 0.25rem; margin-left: .25rem;">Critical</span>`
+	PrefixHTMLUnknown  string = `<span style="align-items: center; background-color: #6c757d; border-radius: 4px; color: white; display: inline-flex; font-size: 12px; height: 2rem; justify-content: center; line-height: 1.5; padding-left: .75rem; padding-right: .75rem; white-space: nowrap; margin-top: 0.25rem; margin-left: .25rem;">Unknown</span>`
 )
 
 //Status type used to define the status of the check
@@ -86,7 +86,7 @@ func (o *OutputMode) SetHTML() {
 	Output.newLine = "<br />"
 	Output.bullet = "&#8226;&#8194;"
 	Output.classOk = "color: #28a745!important;"
-	Output.classWarning = "color: #ffc107!important;"
+	Output.classWarning = "color: #947600!important;"
 	Output.classCritical = "color: #dc3545!important;"
 }
 

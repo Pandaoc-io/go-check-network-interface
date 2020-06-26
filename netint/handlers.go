@@ -205,6 +205,12 @@ func Bandwidth(intNewData *InterfaceDetails, intOldData *InterfaceDetails, timeD
 			log.Debug("No IfOutOctets counter available, skip...")
 		}
 	}
+
+	//Force 0% bandwidth usage for interfaces named vlanxxx
+	if strings.Contains(strings.ToLower(*intNewData.IfName), "vlan") || strings.Contains(strings.ToLower(*intNewData.IfDescr), "vlan") {
+		intNewData.IfInPrct = nil
+		intNewData.IfOutPrct = nil
+	}
 	if intNewData.IfInRate != nil {
 		//We suppress the UOM to be compatible with the Nagvis weathermap feature (value expressed in bps)
 		chk.AddPerfData("in", strconv.FormatFloat(*intNewData.IfInRate, 'f', 2, 64), "", 0, 0, 0, *intNewData.SpeedInbit)

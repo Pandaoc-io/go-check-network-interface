@@ -44,8 +44,8 @@ func networkInterfaceCheck(snmpVersion string, cmd *cobra.Command, args []string
 	ecflag, _ := cmd.Flags().GetString("error-critical")
 	ewflag, _ := cmd.Flags().GetString("error-warning")
 	//Bandwidth thresholds
-	bcflag, _ := cmd.Flags().GetFloat64("bandwidth-critical")
-	bwflag, _ := cmd.Flags().GetFloat64("bandwidth-warning")
+	bcflag, _ := cmd.Flags().GetString("bandwidth-critical")
+	bwflag, _ := cmd.Flags().GetString("bandwidth-warning")
 
 	//Check if Error/Dicard thresholds have the same type
 	if (strings.Contains(dcflag, "pps") && !strings.Contains(dwflag, "pps")) || (strings.Contains(dcflag, "%") && !strings.Contains(dwflag, "%")) {
@@ -54,6 +54,16 @@ func networkInterfaceCheck(snmpVersion string, cmd *cobra.Command, args []string
 	if (strings.Contains(ecflag, "pps") && !strings.Contains(ewflag, "pps")) || (strings.Contains(ecflag, "%") && !strings.Contains(ewflag, "%")) {
 		sknchk.Unknown("Error thresholds haven't the same type. See usage for more details.", "")
 	}
+
+	if !strings.Contains(bcflag, "%") || !strings.Contains(bwflag, "%") {
+		sknchk.Unknown("Bandwidth thresholds aren't of type %. See usage for more details.", "")
+	}
+
+	var bc float64
+	var bw float64
+
+	bc, _ = strconv.ParseFloat(strings.Split(bcflag, "%")[0], 64)
+	bw, _ = strconv.ParseFloat(strings.Split(bwflag, "%")[0], 64)
 
 	var ec float64
 	var ew float64
@@ -163,13 +173,15 @@ func networkInterfaceCheck(snmpVersion string, cmd *cobra.Command, args []string
 
 	//Check if interface is admin down, in that no need to process other information.
 	if intNewData.IfAdminStatus != nil && *intNewData.IfAdminStatus == netint.DOWN {
-		sknchk.Critical(`The interface is administratively <span style="color: hsl(348, 86%%, 61%%);">DOWN</span>`, "")
+		sknchk.Critical(fmt.Sprintf("The interface is administratively %v",
+			sknchk.FmtCritical("DOWN")), "")
 	}
 	if intNewData.IfOperStatus != nil {
 		for _, st := range []uint{2, 3, 4, 5, 6, 7} {
 			if st == *intNewData.IfOperStatus {
 				operStStrg := netint.OperToString(st)
-				sknchk.Critical(fmt.Sprintf(`The interface status is <span style="color: hsl(348, 86%%, 61%%);">%v</span> (oper), <span style="color: hsl(348, 86%%, 61%%);">UP</span> (admin)`, operStStrg), "")
+				sknchk.Critical(fmt.Sprintf("The interface status is %v (oper), %v (admin)",
+					sknchk.FmtCritical(operStStrg), sknchk.FmtOk("UP")), "")
 			}
 		}
 	}
@@ -246,7 +258,7 @@ func networkInterfaceCheck(snmpVersion string, cmd *cobra.Command, args []string
 	//speed is also used for the creation of the bandwidtch perfdata. Need to be called before Bandwidth function
 	netint.Speed(intNewData, chk)
 
-	netint.Bandwidth(intNewData, intOldData, timeDiff, chk, bwflag, bcflag)
+	netint.Bandwidth(intNewData, intOldData, timeDiff, chk, bw, bc)
 
 	netint.Packets(intNewData, intOldData, timeDiff)
 
@@ -276,8 +288,8 @@ func networkInterfaceCheck(snmpVersion string, cmd *cobra.Command, args []string
 	} else {
 		var tableHTML string
 		thresholds := &ui.Thresholds{
-			Bw:     bwflag,
-			Bc:     bcflag,
+			Bw:     bw,
+			Bc:     bc,
 			Ewflag: ewflag,
 			Ecflag: ecflag,
 			Dwflag: dwflag,
