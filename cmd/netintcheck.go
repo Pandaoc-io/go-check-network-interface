@@ -21,6 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import (
 	"fmt"
 	"math"
+	"reflect"
 	"strconv"
 	"strings"
 	"time"
@@ -217,7 +218,6 @@ func networkInterfaceCheck(snmpVersion string, cmd *cobra.Command, args []string
 
 	timeDiff := time.Unix(intNewData.Timestamp, 0).Sub(time.Unix(intOldData.Timestamp, 0))
 	log.Debugf("Time diff between the 2 polling : %v", timeDiff.String())
-
 	if intNewData.UpTime != nil && timeDiff > sysUpTime {
 		log.Debugf("timediff is upper than the uptime : (%v > %v)", timeDiff.String(), sysUpTime.String())
 		//If it's because of a overflow on the uptime counter (device up more than 497 days) we don't reset the old values.
@@ -233,24 +233,32 @@ func networkInterfaceCheck(snmpVersion string, cmd *cobra.Command, args []string
 				//As the system have rebooted the counter have normally reset. We force the old values to O.
 				//We force the time diff to the uptime value
 				timeDiff = sysUpTime
-				*intOldData.IfInOctets = 0
-				*intOldData.IfInUcastPkts = 0
-				*intOldData.IfInNUcastPkts = 0
-				*intOldData.IfInDiscards = 0
-				*intOldData.IfInErrors = 0
-				*intOldData.IfOutOctets = 0
-				*intOldData.IfOutUcastPkts = 0
-				*intOldData.IfOutNUcastPkts = 0
-				*intOldData.IfOutDiscards = 0
-				*intOldData.IfOutErrors = 0
-				*intOldData.IfHCInOctets = 0
-				*intOldData.IfHCInUcastPkts = 0
-				*intOldData.IfHCInMulticastPkts = 0
-				*intOldData.IfHCInBroadcastPkts = 0
-				*intOldData.IfHCOutOctets = 0
-				*intOldData.IfHCOutUcastPkts = 0
-				*intOldData.IfHCOutMulticastPkts = 0
-				*intOldData.IfHCOutBroadcastPkts = 0
+				elementList := []string{
+					"IfInOctets",
+					"IfInUcastPkts",
+					"IfInNUcastPkts",
+					"IfInDiscards",
+					"IfInErrors",
+					"IfOutOctets",
+					"IfOutUcastPkts",
+					"IfOutNUcastPkts",
+					"IfOutDiscards",
+					"IfOutErrors",
+					"IfHCInOctets",
+					"IfHCInUcastPkts",
+					"IfHCInMulticastPkts",
+					"IfHCInBroadcastPkts",
+					"IfHCOutOctets",
+					"IfHCOutUcastPkts",
+					"IfHCOutMulticastPkts",
+					"IfHCOutBroadcastPkts",
+				}
+				for _, elem := range elementList {
+					if !reflect.ValueOf(intOldData).Elem().FieldByName(elem).IsNil() {
+						zeroValue := uint(0)
+						reflect.ValueOf(intOldData).Elem().FieldByName(elem).Set(reflect.ValueOf(&zeroValue))
+					}
+				}
 			}
 		}
 	}
