@@ -77,7 +77,7 @@ const TableTmpl = `
                 <th style="padding: 5px;">Usage Critical<br>threshold</th>
               </tr>
               <tr>
-                {{if .IfInPrct -}}
+                {{if .IfInRate -}}
                 {{if eq (CompPnF .IfInPrct BwCritThreshold) 1 -}}
                   <td colspan="2" style="background-color: #f8d7da; color: #721c24; padding: 5px;">{{if .IfInRate}}{{HumanBps .IfInRate}}{{end}}{{if .IfInPrct}} &#11020; {{Float2f .IfInPrct}} %{{end}}</td>
                 {{else if eq (CompPnF .IfInPrct BwWarnThreshold) 1 -}}
@@ -88,7 +88,7 @@ const TableTmpl = `
                 {{else -}}
                 <td colspan="2" style="padding: 5px;">N/A</td>
                 {{end -}}
-                {{if .IfOutPrct -}}
+                {{if .IfOutRate -}}
                 {{if eq (CompPnF .IfOutPrct BwCritThreshold) 1 -}}
                   <td colspan="2" style="background-color: #f8d7da; color: #721c24; padding: 5px;">{{if .IfOutRate}}{{HumanBps .IfOutRate}}{{end}}{{if .IfOutPrct}} &#11020; {{Float2f .IfOutPrct}} %{{end}}</td>
                 {{else if eq (CompPnF .IfOutPrct BwWarnThreshold) 1 -}}
@@ -259,6 +259,9 @@ func GenerateHTMLTable(intNewData *netint.InterfaceDetails, threshold *Threshold
 			return "%"
 		},
 		"CompPnF": func(f1 *float64, f2 float64) int {
+      if f1 == nil {
+        return -1
+      }
 			if *f1 > f2 {
 				return 1
 			} else if *f1 == f2 {
