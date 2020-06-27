@@ -79,22 +79,22 @@ const TableTmpl = `
               <tr>
                 {{if .IfInPrct -}}
                 {{if eq (CompPnF .IfInPrct BwCritThreshold) 1 -}}
-                  <td colspan="2" style="background-color: #f8d7da; color: #721c24; padding: 5px;">{{if .IfInRate}}{{HumanBps .IfInRate}}{{end}} &#11020; {{Float2f .IfInPrct}} %</td>
+                  <td colspan="2" style="background-color: #f8d7da; color: #721c24; padding: 5px;">{{if .IfInRate}}{{HumanBps .IfInRate}}{{end}}{{if .IfInPrct}} &#11020; {{Float2f .IfInPrct}} %{{end}}</td>
                 {{else if eq (CompPnF .IfInPrct BwWarnThreshold) 1 -}}
-                  <td colspan="2" style="background-color: #fff3cd; color: #856404; padding: 5px;">{{if .IfInRate}}{{HumanBps .IfInRate}}{{end}} &#11020;  {{Float2f .IfInPrct}} %</td>
+                  <td colspan="2" style="background-color: #fff3cd; color: #856404; padding: 5px;">{{if .IfInRate}}{{HumanBps .IfInRate}}{{end}}{{if .IfInPrct}} &#11020;  {{Float2f .IfInPrct}} %{{end}}</td>
                 {{else -}}
-                  <td colspan="2" style="background-color: #d4edda; color: #155724; padding: 5px;">{{if .IfInRate}}{{HumanBps .IfInRate}}{{end}} &#11020; {{Float2f .IfInPrct}} %</td>
+                  <td colspan="2" style="background-color: #d4edda; color: #155724; padding: 5px;">{{if .IfInRate}}{{HumanBps .IfInRate}}{{end}}{{if .IfInPrct}} &#11020; {{Float2f .IfInPrct}} %{{end}}</td>
                 {{end -}}
                 {{else -}}
                 <td colspan="2" style="padding: 5px;">N/A</td>
                 {{end -}}
                 {{if .IfOutPrct -}}
                 {{if eq (CompPnF .IfOutPrct BwCritThreshold) 1 -}}
-                  <td colspan="2" style="background-color: #f8d7da; color: #721c24; padding: 5px;">{{if .IfOutRate}}{{HumanBps .IfOutRate}}{{end}} &#11020; {{Float2f .IfOutPrct}} %</td>
+                  <td colspan="2" style="background-color: #f8d7da; color: #721c24; padding: 5px;">{{if .IfOutRate}}{{HumanBps .IfOutRate}}{{end}}{{if .IfOutPrct}} &#11020; {{Float2f .IfOutPrct}} %{{end}}</td>
                 {{else if eq (CompPnF .IfOutPrct BwWarnThreshold) 1 -}}
-                  <td colspan="2" style="background-color: #fff3cd; color: #856404; padding: 5px;">{{if .IfOutRate}}{{HumanBps .IfOutRate}}{{end}} &#11020; {{Float2f .IfOutPrct}} %</td>
+                  <td colspan="2" style="background-color: #fff3cd; color: #856404; padding: 5px;">{{if .IfOutRate}}{{HumanBps .IfOutRate}}{{end}}{{if .IfOutPrct}} &#11020; {{Float2f .IfOutPrct}} %{{end}}</td>
                 {{else -}}
-                  <td colspan="2" style="background-color: #d4edda; color: #155724; padding: 5px;">{{if .IfOutRate}}{{HumanBps .IfOutRate}}{{end}} &#11020; {{Float2f .IfOutPrct}} %</td>
+                  <td colspan="2" style="background-color: #d4edda; color: #155724; padding: 5px;">{{if .IfOutRate}}{{HumanBps .IfOutRate}}{{end}}{{if .IfOutPrct}} &#11020; {{Float2f .IfOutPrct}} %{{end}}</td>
                 {{end -}}
                 {{else -}}
                 <td colspan="2" style="padding: 5px;">N/A</td>

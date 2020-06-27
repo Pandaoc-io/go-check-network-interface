@@ -67,16 +67,36 @@ func CliSummary(intNewData *netint.InterfaceDetails, chk *sknchk.Check) {
 	} else {
 		chk.AddShort("Out Uni/Multi/Broadcast packets : Can't be determined", true)
 	}
+	var inRateStr string
 	if intNewData.IfInRate != nil {
-		chk.AddShort(fmt.Sprintf("In BW : %v (%.2f%%)", convert.HumanReadable(*intNewData.IfInRate, "bits/sec"), *intNewData.IfInPrct), true)
+		inRateStr = fmt.Sprintf("In BW : %v", convert.HumanReadable(*intNewData.IfInRate, "bits/sec"))
 	} else {
-		chk.AddShort("In BW : Can't be determined", true)
+		inRateStr = "In BW : Rate can't be determined"
 	}
+	var inPrctStr string
+	if intNewData.IfInPrct != nil {
+		inPrctStr = fmt.Sprintf(" (%.2f%%)", *intNewData.IfInPrct)
+	} else {
+		inPrctStr = ", Percentage can't be determined"
+	}
+
+	chk.AddShort(inRateStr+inPrctStr, true)
+
+	var outRateStr string
 	if intNewData.IfOutRate != nil {
-		chk.AddShort(fmt.Sprintf("Out BW : %v (%.2f%%)", convert.HumanReadable(*intNewData.IfOutRate, "bits/sec"), *intNewData.IfOutPrct), true)
+		outRateStr = fmt.Sprintf("In BW : %v", convert.HumanReadable(*intNewData.IfOutRate, "bits/sec"))
 	} else {
-		chk.AddShort("Out BW : Can't be determined", true)
+		outRateStr = "Out BW : Rate can't be determined"
 	}
+	var outPrctStr string
+	if intNewData.IfOutPrct != nil {
+		outPrctStr = fmt.Sprintf(" (%.2f%%)", *intNewData.IfOutPrct)
+	} else {
+		outPrctStr = ", Percentage can't be determined"
+	}
+
+	chk.AddShort(outRateStr+outPrctStr, true)
+
 	if intNewData.IfInErrorsRate != nil {
 		if intNewData.LocIfInCRCRate != nil {
 			chk.AddShort(fmt.Sprintf("In Errors : %.2f pps (%.2f%%) with %.2f pps CRC Errors", *intNewData.IfInErrorsRate, *intNewData.IfInErrorsPrct, *intNewData.LocIfInCRCRate), true)
