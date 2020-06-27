@@ -22,6 +22,7 @@ import (
 	"fmt"
 	"math"
 	"reflect"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -290,6 +291,11 @@ func networkInterfaceCheck(snmpVersion string, cmd *cobra.Command, args []string
 		chk.PrependShort("Error(s) found on the interface:", false)
 	case sknchk.RcCritical:
 		chk.PrependShort("Critical Error(s) found on the interface:", false)
+	}
+
+	re := regexp.MustCompile(`(<>|->|<*>|< >)`)
+	if intNewData.IfAlias == nil && !re.Match([]byte(*intNewData.IfAlias)) {
+		sknchk.ForceRc(sknchk.RcOk)
 	}
 
 	if verbose {
