@@ -194,7 +194,10 @@ func networkInterfaceCheck(snmpVersion string, cmd *cobra.Command, args []string
 		for _, st := range []uint{2, 3, 4, 5, 6, 7} {
 			if st == *intNewData.IfOperStatus {
 				operStStr := netint.OperToString(st)
-				operShortStr := fmt.Sprintf("The interface status is %v (oper), %v (admin)", sknchk.FmtCritical(operStStr), sknchk.FmtOk("UP"))
+				operShortStr := fmt.Sprintf("The interface status is %v/%v (oper/admin)", sknchk.FmtCritical(operStStr), sknchk.FmtOk("UP"))
+				if intNewData.IfAlias != nil {
+					operShortStr = operShortStr + fmt.Sprintf(", Alias : %v", *intNewData.IfAlias)
+				}
 				if isCritical {
 					sknchk.Critical(operShortStr, "")
 				} else {
