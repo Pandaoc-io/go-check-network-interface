@@ -30,7 +30,7 @@ import (
 
 //TableTmpl is the HTML code to generate the table into the long output
 const TableTmpl = `
-<table style="width: 90%; border-collapse: collapse; border-color: #000000; margin-left: auto; margin-right: auto; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; background-color: white;" border="1">
+<table style="width: 90%; border-collapse: collapse; border-color: #000000; margin-left: auto; margin-right: auto; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; background-color: white; white-space: nowrap; margin-top: 10px; margin-bottom: 10px;" border="1">
             <tbody>
               <tr>
                 <th colspan="6" style="color: #2160c4; background-color: #eef3fc; padding: 5px; text-align: center;">Name : {{if .IfName}}{{.IfName}}{{else}}No name found{{end}} - Desc : {{if .IfDescr}}{{.IfDescr}}{{else}}No description found{{end}}</th>
