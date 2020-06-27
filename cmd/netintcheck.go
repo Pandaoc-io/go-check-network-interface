@@ -173,6 +173,13 @@ func networkInterfaceCheck(snmpVersion string, cmd *cobra.Command, args []string
 		sknchk.Unknown(fmt.Sprint(err), "")
 	}
 
+	//Check if the interface is tagged as Critical
+	var isCritical bool
+	re := regexp.MustCompile(`(<>|->|<*>|< >)`)
+	if intNewData.IfAlias != nil && re.Match([]byte(*intNewData.IfAlias)) {
+		isCritical = true
+	}
+
 	//Check if interface is admin down, in this case no need to process other information.
 	if intNewData.IfAdminStatus != nil && *intNewData.IfAdminStatus == netint.DOWN {
 		//quit with Ok return Code, because the action have been made consciously
@@ -182,9 +189,13 @@ func networkInterfaceCheck(snmpVersion string, cmd *cobra.Command, args []string
 	if intNewData.IfOperStatus != nil {
 		for _, st := range []uint{2, 3, 4, 5, 6, 7} {
 			if st == *intNewData.IfOperStatus {
-				operStStrg := netint.OperToString(st)
-				sknchk.Critical(fmt.Sprintf("The interface status is %v (oper), %v (admin)",
-					sknchk.FmtCritical(operStStrg), sknchk.FmtOk("UP")), "")
+				operStStr := netint.OperToString(st)
+				operShortStr := fmt.Sprintf("The interface status is %v (oper), %v (admin)", sknchk.FmtCritical(operStStr), sknchk.FmtOk("UP"))
+				if isCritical {
+					sknchk.Critical(operShortStr, "")
+				} else {
+					sknchk.Ok(operShortStr, "")
+				}
 			}
 		}
 	}
@@ -293,9 +304,9 @@ func networkInterfaceCheck(snmpVersion string, cmd *cobra.Command, args []string
 		chk.PrependShort("Critical Error(s) found on the interface:", false)
 	}
 
-	re := regexp.MustCompile(`(<>|->|<*>|< >)`)
-	if intNewData.IfAlias == nil && !re.Match([]byte(*intNewData.IfAlias)) {
-		sknchk.ForceRc(sknchk.RcOk)
+	//Force RC to Ok if Critical interface
+	if isCritical {
+		chk.ForceRc(sknchk.RcOk)
 	}
 
 	if verbose {
