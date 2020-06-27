@@ -6,7 +6,7 @@ require (
 	github.com/golang/mock v1.4.3 // indirect
 	github.com/mitchellh/mapstructure v1.3.2
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
-	github.com/pandaoc-io/go-shinken-check v0.2.3
+	github.com/pandaoc-io/go-shinken-check v0.3.0
 	github.com/sirupsen/logrus v1.6.0
 	github.com/soniah/gosnmp v1.25.0
 	github.com/spf13/cobra v1.0.0

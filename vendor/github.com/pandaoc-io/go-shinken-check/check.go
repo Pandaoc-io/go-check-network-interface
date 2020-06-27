@@ -213,6 +213,11 @@ func Unknown(short string, long string) {
 	Exit(check)
 }
 
+//ForceRc will force the return code of the check to the one given in argument
+func (c *Check) ForceRc(rc Status) {
+	c.rc = []Status{rc}
+}
+
 //Rc return the Return Code of the check
 func (c *Check) Rc() Status {
 	var maxRc Status
