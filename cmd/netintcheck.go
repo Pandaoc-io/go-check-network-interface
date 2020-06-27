@@ -174,10 +174,14 @@ func networkInterfaceCheck(snmpVersion string, cmd *cobra.Command, args []string
 	}
 
 	//Check if the interface is tagged as Critical
+	log.Debug("=====================")
 	var isCritical bool
 	re := regexp.MustCompile(`(<>|->|<*>|< >)`)
 	if intNewData.IfAlias != nil && re.Match([]byte(*intNewData.IfAlias)) {
+		log.Debugf("Critical interface detected : %v", *intNewData.IfAlias)
 		isCritical = true
+	} else {
+		log.Debugf("Non critical interface detected : %v", *intNewData.IfAlias)
 	}
 
 	//Check if interface is admin down, in this case no need to process other information.
@@ -304,8 +308,8 @@ func networkInterfaceCheck(snmpVersion string, cmd *cobra.Command, args []string
 		chk.PrependShort("Critical Error(s) found on the interface:", false)
 	}
 
-	//Force RC to Ok if Critical interface
-	if isCritical {
+	//Force RC to Ok for non critical interface
+	if !isCritical {
 		chk.ForceRc(sknchk.RcOk)
 	}
 
