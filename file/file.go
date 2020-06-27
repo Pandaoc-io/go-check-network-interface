@@ -34,7 +34,7 @@ import (
 )
 
 //CheckPath is the global path where all the files read/write by the check will be hosted
-const CheckPath = "/var/tmp/check_snmp_interface_foreach"
+const CheckPath = "/var/tmp/go_check_snmp_interface_foreach"
 
 //DevicePath is the path where is will be stored all the JSON files of the device
 var DevicePath string
