@@ -544,17 +544,17 @@ func Errors(intNewData *InterfaceDetails, intOldData *InterfaceDetails, timeDiff
 		chk.AddPerfData("in_errors", strconv.FormatFloat(*intNewData.IfInErrorsRate, 'f', 2, 64), "pps", 0, 0, 0, 0)
 	}
 
-	if intNewData.IfInErrorsPrct != nil {
+	/* if intNewData.IfInErrorsPrct != nil {
 		chk.AddPerfData("in_errors_prct", strconv.FormatFloat(*intNewData.IfInErrorsPrct, 'f', 2, 64), "%", 0, 0, 0, 0)
-	}
+	} */
 
 	if intNewData.IfOutErrorsRate != nil {
 		chk.AddPerfData("out_errors", strconv.FormatFloat(*intNewData.IfOutErrorsRate, 'f', 2, 64), "pps", 0, 0, 0, 0)
 	}
 
-	if intNewData.IfOutErrorsPrct != nil {
+	/* if intNewData.IfOutErrorsPrct != nil {
 		chk.AddPerfData("out_errors_prct", strconv.FormatFloat(*intNewData.IfOutErrorsPrct, 'f', 2, 64), "%", 0, 0, 0, 0)
-	}
+	} */
 
 	//Error thresholds
 	if ev == "pps" {
@@ -640,17 +640,17 @@ func Discards(intNewData *InterfaceDetails, intOldData *InterfaceDetails, timeDi
 		chk.AddPerfData("in_discards", strconv.FormatFloat(*intNewData.IfInDiscardsRate, 'f', 2, 64), "pps", 0, 0, 0, 0)
 	}
 
-	if intNewData.IfInDiscardsPrct != nil {
+	/* if intNewData.IfInDiscardsPrct != nil {
 		chk.AddPerfData("in_discards_prct", strconv.FormatFloat(*intNewData.IfInDiscardsPrct, 'f', 2, 64), "%", 0, 0, 0, 0)
-	}
+	} */
 
 	if intNewData.IfOutDiscardsRate != nil {
 		chk.AddPerfData("out_discards", strconv.FormatFloat(*intNewData.IfOutDiscardsRate, 'f', 2, 64), "pps", 0, 0, 0, 0)
 	}
 
-	if intNewData.IfOutDiscardsPrct != nil {
+	/* if intNewData.IfOutDiscardsPrct != nil {
 		chk.AddPerfData("out_discards_prct", strconv.FormatFloat(*intNewData.IfOutDiscardsPrct, 'f', 2, 64), "%", 0, 0, 0, 0)
-	}
+	} */
 
 	if dv == "pps" {
 		if intNewData.IfInDiscardsRate != nil && *intNewData.IfInDiscardsRate > dc {
