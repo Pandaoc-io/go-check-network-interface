@@ -4,7 +4,7 @@ github.com/inconshreveable/mousetrap
 github.com/konsorten/go-windows-terminal-sequences
 # github.com/mitchellh/mapstructure v1.3.2
 github.com/mitchellh/mapstructure
-# github.com/pandaoc-io/go-shinken-check v0.3.0
+# github.com/pandaoc-io/go-shinken-check v0.3.1
 github.com/pandaoc-io/go-shinken-check
 # github.com/sirupsen/logrus v1.6.0
 github.com/sirupsen/logrus

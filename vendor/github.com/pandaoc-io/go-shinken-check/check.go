@@ -84,7 +84,7 @@ func (o *OutputMode) Mode() string {
 func (o *OutputMode) SetHTML() {
 	Output.mode = "html"
 	Output.newLine = "<br />"
-	Output.bullet = "&#8226;&#8194;"
+	Output.bullet = "&#8194;&#8226;&#8194;"
 	Output.classOk = "color: #28a745!important;"
 	Output.classWarning = "color: #947600!important;"
 	Output.classCritical = "color: #dc3545!important;"
