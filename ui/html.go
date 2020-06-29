@@ -246,7 +246,7 @@ func GenerateHTMLTable(intNewData *netint.InterfaceDetails, threshold *Threshold
 			}
 			return re.Match([]byte(*intNewData.IfAlias))
 		},
-		"HumanBps":         func(f float64) string { return convert.HumanReadable(f, 1024, "bits/sec") },
+		"HumanBps":         func(f float64) string { return convert.HumanReadable(f, 1000, "bits/sec") },
 		"HumanSpeed":       func() string { return convert.HumanReadable(float64(*intNewData.SpeedInbit), 1000, "bps") },
 		"BwCritThreshold":  func() float64 { return threshold.Bc },
 		"BwWarnThreshold":  func() float64 { return threshold.Bw },

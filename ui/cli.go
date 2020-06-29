@@ -69,7 +69,7 @@ func CliSummary(intNewData *netint.InterfaceDetails, chk *sknchk.Check) {
 	}
 	var inRateStr string
 	if intNewData.IfInRate != nil {
-		inRateStr = fmt.Sprintf("In BW : %v", convert.HumanReadable(*intNewData.IfInRate, 1024, "bits/sec"))
+		inRateStr = fmt.Sprintf("In BW : %v", convert.HumanReadable(*intNewData.IfInRate, 1000, "bits/sec"))
 	} else {
 		inRateStr = "In BW : Rate can't be determined"
 	}
@@ -84,7 +84,7 @@ func CliSummary(intNewData *netint.InterfaceDetails, chk *sknchk.Check) {
 
 	var outRateStr string
 	if intNewData.IfOutRate != nil {
-		outRateStr = fmt.Sprintf("In BW : %v", convert.HumanReadable(*intNewData.IfOutRate, 1024, "bits/sec"))
+		outRateStr = fmt.Sprintf("In BW : %v", convert.HumanReadable(*intNewData.IfOutRate, 1000, "bits/sec"))
 	} else {
 		outRateStr = "Out BW : Rate can't be determined"
 	}
