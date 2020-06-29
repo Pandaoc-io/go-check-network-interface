@@ -24,7 +24,7 @@ func CliSummary(intNewData *netint.InterfaceDetails, chk *sknchk.Check) {
 	if intNewData.IfAlias != nil {
 		chk.AddShort(fmt.Sprintf("Alias : %v", *intNewData.IfAlias), true)
 	}
-	chk.AddShort(fmt.Sprintf("Speed : %v", convert.HumanReadable(float64(*intNewData.SpeedInbit), "bps")), true)
+	chk.AddShort(fmt.Sprintf("Speed : %v", convert.HumanReadable(float64(*intNewData.SpeedInbit), 1000, "bps")), true)
 	if intNewData.IfOperStatus != nil {
 		if *intNewData.IfOperStatus == netint.UP {
 			chk.AddShort("Oper Status : UP", true)
@@ -69,7 +69,7 @@ func CliSummary(intNewData *netint.InterfaceDetails, chk *sknchk.Check) {
 	}
 	var inRateStr string
 	if intNewData.IfInRate != nil {
-		inRateStr = fmt.Sprintf("In BW : %v", convert.HumanReadable(*intNewData.IfInRate, "bits/sec"))
+		inRateStr = fmt.Sprintf("In BW : %v", convert.HumanReadable(*intNewData.IfInRate, 1024, "bits/sec"))
 	} else {
 		inRateStr = "In BW : Rate can't be determined"
 	}
@@ -84,7 +84,7 @@ func CliSummary(intNewData *netint.InterfaceDetails, chk *sknchk.Check) {
 
 	var outRateStr string
 	if intNewData.IfOutRate != nil {
-		outRateStr = fmt.Sprintf("In BW : %v", convert.HumanReadable(*intNewData.IfOutRate, "bits/sec"))
+		outRateStr = fmt.Sprintf("In BW : %v", convert.HumanReadable(*intNewData.IfOutRate, 1024, "bits/sec"))
 	} else {
 		outRateStr = "Out BW : Rate can't be determined"
 	}

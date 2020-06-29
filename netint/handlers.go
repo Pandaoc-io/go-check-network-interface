@@ -229,13 +229,13 @@ func Bandwidth(intNewData *InterfaceDetails, intOldData *InterfaceDetails, timeD
 
 	if intNewData.IfInPrct != nil && *intNewData.IfInPrct > bc {
 		chk.AddShort(fmt.Sprintf(`Very high In Bandwidth : %v - %v (> %v%%)`,
-			convert.HumanReadable(*intNewData.IfInRate, "bits/sec"),
+			convert.HumanReadable(*intNewData.IfInRate, 1024, "bits/sec"),
 			sknchk.FmtCritical(fmt.Sprintf("%.2f%%", *intNewData.IfInPrct)), bc),
 			true)
 		chk.AddCritical()
 	} else if intNewData.IfInPrct != nil && *intNewData.IfInPrct > bw {
 		chk.AddShort(fmt.Sprintf(`High In Bandwidth : %v - %v (> %v%%)`,
-			convert.HumanReadable(*intNewData.IfInRate, "bits/sec"),
+			convert.HumanReadable(*intNewData.IfInRate, 1024, "bits/sec"),
 			sknchk.FmtWarning(fmt.Sprintf("%.2f%%", *intNewData.IfInPrct)), bw),
 			true)
 		chk.AddWarning()
@@ -243,13 +243,13 @@ func Bandwidth(intNewData *InterfaceDetails, intOldData *InterfaceDetails, timeD
 
 	if intNewData.IfOutPrct != nil && *intNewData.IfOutPrct > bc {
 		chk.AddShort(fmt.Sprintf(`Very high Out Bandwidth : %v - %v (> %v%%)`,
-			convert.HumanReadable(*intNewData.IfOutRate, "bits/sec"),
+			convert.HumanReadable(*intNewData.IfOutRate, 1024, "bits/sec"),
 			sknchk.FmtCritical(fmt.Sprintf("%.2f%%", *intNewData.IfOutPrct)), bc),
 			true)
 		chk.AddCritical()
 	} else if intNewData.IfOutPrct != nil && *intNewData.IfOutPrct > bw {
 		chk.AddShort(fmt.Sprintf(`High Out Bandwidth : %v - %v (> %v%%)`,
-			convert.HumanReadable(*intNewData.IfOutRate, "bits/sec"),
+			convert.HumanReadable(*intNewData.IfOutRate, 1024, "bits/sec"),
 			sknchk.FmtWarning(fmt.Sprintf("%.2f%%", *intNewData.IfOutPrct)), bw),
 			true)
 		chk.AddWarning()
@@ -797,7 +797,7 @@ func bwStats(newData interface{}, oldData interface{}, speed interface{}, elapse
 		rate = diffConverted * 8 / elapseTime.Seconds()
 	}
 
-	log.Debugf("Rate : %v\n", convert.HumanReadable(rate, "bits/sec"))
+	log.Debugf("Rate : %v\n", convert.HumanReadable(rate, 1024, "bits/sec"))
 
 	speedConverted, err := convert.ToFloat(speed)
 	if err != nil {
@@ -807,7 +807,7 @@ func bwStats(newData interface{}, oldData interface{}, speed interface{}, elapse
 	if speedConverted > 0 {
 		prct = (rate / speedConverted) * 100
 	}
-	log.Debugf("Max value : %v\n", convert.HumanReadable(speedConverted, "bps"))
+	log.Debugf("Max value : %v\n", convert.HumanReadable(speedConverted, 1000, "bps"))
 	log.Debugf("Percent : %.2f %%\n", prct)
 
 	//Now we test is the values are relevant
@@ -823,7 +823,7 @@ func bwStats(newData interface{}, oldData interface{}, speed interface{}, elapse
 			BwInconsistency = true
 			rate = 0
 			prct = 0
-			log.Debugf("New Rate : %v\n", convert.HumanReadable(rate, "bits/sec"))
+			log.Debugf("New Rate : %v\n", convert.HumanReadable(rate, 1024, "bits/sec"))
 			log.Debugf("New Percent : %.2f %%\n", prct)
 		}
 		//For some link like bond we don't have any speed, generaly set to 0.
@@ -837,7 +837,7 @@ func bwStats(newData interface{}, oldData interface{}, speed interface{}, elapse
 		BwInconsistency = true
 		rate = 0
 		prct = 0
-		log.Debugf("New Rate : %.2f\n", convert.HumanReadable(rate, "bits/sec"))
+		log.Debugf("New Rate : %.2f\n", convert.HumanReadable(rate, 1024, "bits/sec"))
 		log.Debugf("New Percent : %.2f %%\n", prct)
 	}
 

@@ -20,41 +20,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import (
 	"fmt"
-	"strconv"
-	"strings"
-)
-
-//Global value for B, KB, MB, GB and TB
-const (
-	B  = 1
-	KB = B * 1000
-	MB = KB * 1000
-	GB = MB * 1000
-	TB = GB * 1000
 )
 
 //HumanReadable convert float64 value to something more readable in K, M, G, T with a 2 points precision
-func HumanReadable(value float64, suffix string) string {
-	unit := ""
-
-	switch {
-	case value >= TB:
-		unit = "T"
-		value = value / TB
-	case value >= GB:
-		unit = "G"
-		value = value / GB
-	case value >= MB:
-		unit = "M"
-		value = value / MB
-	case value >= KB:
-		unit = "K"
-		value = value / KB
+func HumanReadable(value float64, base float64, suffix string) string {
+	if value < base {
+		return fmt.Sprintf("%.0f %v", value, suffix)
 	}
-
-	result := strconv.FormatFloat(value, 'f', 2, 64)
-	result = strings.TrimSuffix(result, ".0")
-	return result + " " + unit + suffix
+	div, exp := base, 0
+	for n := value / base; n >= base; n /= base {
+		div *= base
+		exp++
+	}
+	return fmt.Sprintf("%.2f %c%v", float64(value)/float64(div), "kMGTPE"[exp], suffix)
 }
 
 //ToUint convert int and uint types to uint
