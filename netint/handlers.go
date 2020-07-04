@@ -112,7 +112,7 @@ func FetchAllDatas(snmpConnection *g.GoSNMP, index string, version string, cmd *
 		if err != nil {
 			return nil, err
 		}
-		if elem == "IfAlias" {
+		if elem == "IfAlias" && networkinterface.IfAlias != nil {
 			log.Debug("Replace the characters of the alias '|' by '!'")
 			*networkinterface.IfAlias = strings.ReplaceAll(*networkinterface.IfAlias, "|", "!")
 		}
@@ -207,7 +207,7 @@ func Bandwidth(intNewData *InterfaceDetails, intOldData *InterfaceDetails, timeD
 	}
 
 	//Force 0% bandwidth usage for interfaces named vlanxxx
-	if strings.Contains(strings.ToLower(*intNewData.IfName), "vlan") || strings.Contains(strings.ToLower(*intNewData.IfDescr), "vlan") {
+	if (intNewData.IfName != nil && strings.Contains(strings.ToLower(*intNewData.IfName), "vlan")) || (intNewData.IfDescr != nil && strings.Contains(strings.ToLower(*intNewData.IfDescr), "vlan")) {
 		intNewData.IfInPrct = nil
 		intNewData.IfOutPrct = nil
 	}
