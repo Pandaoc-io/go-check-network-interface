@@ -70,4 +70,6 @@ func init() {
 	rootCmd.PersistentFlags().String("discard-critical", "100pps", "Critical threshold of the Bandwidth usage(in %% or pps)")
 
 	rootCmd.PersistentFlags().Int("index-expiration", 60, "Expiration of the interfaces index file.")
+
+	rootCmd.PersistentFlags().String("critical-pattern", "on", "Enable alerts only on critical interfaces (Alias pattern) (on|off)")
 }

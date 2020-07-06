@@ -21,6 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import (
 	"fmt"
 	"math"
+	"os"
 	"reflect"
 	"regexp"
 	"strconv"
@@ -48,6 +49,14 @@ func networkInterfaceCheck(snmpVersion string, cmd *cobra.Command, args []string
 	//Bandwidth thresholds
 	bcflag, _ := cmd.Flags().GetString("bandwidth-critical")
 	bwflag, _ := cmd.Flags().GetString("bandwidth-warning")
+
+	criticalPattern, _ := cmd.Flags().GetString("critical-pattern")
+
+	pollerHostname, _ := os.Hostname()
+
+	if !strings.Contains(criticalPattern, "on") && !strings.Contains(criticalPattern, "off") {
+		sknchk.Unknown("alert on Critical patterns isn't set correctly. See usage for more details.", "")
+	}
 
 	//Check if Error/Dicard thresholds have the same type
 	if (strings.Contains(dcflag, "pps") && !strings.Contains(dwflag, "pps")) || (strings.Contains(dcflag, "%") && !strings.Contains(dwflag, "%")) {
@@ -107,7 +116,7 @@ func networkInterfaceCheck(snmpVersion string, cmd *cobra.Command, args []string
 	//Create connection and prepare some variables
 	snmpConnection, err := snmp.CreateConnection(snmpVersion, cmd)
 	if err != nil {
-		sknchk.Unknown(fmt.Sprintf("Error while Creating SNMP connection : %v", err), "")
+		sknchk.Unknown(fmt.Sprintf("Error while Creating SNMP connection : %v (Poller : %v)", err, pollerHostname), "")
 	}
 	file.DevicePath = file.GenDeviceDirName(snmpVersion, cmd)
 	intFilename := strings.ReplaceAll(cmd.Flag("interface").Value.String(), "/", "_") + ".json"
@@ -119,7 +128,7 @@ func networkInterfaceCheck(snmpVersion string, cmd *cobra.Command, args []string
 	if err == nil {
 		asExp, err = file.AsExp(file.DevicePath, "index.json", time.Duration(indexFileExp)*time.Minute)
 		if err != nil {
-			sknchk.Unknown(fmt.Sprintf("Error while accessing Index file : %v", err), "")
+			sknchk.Unknown(fmt.Sprintf("Error while accessing Index file : %v (Poller : %v)", err, pollerHostname), "")
 		}
 		if asExp {
 			log.Debugln("Regeneration of the file...")
@@ -128,18 +137,18 @@ func networkInterfaceCheck(snmpVersion string, cmd *cobra.Command, args []string
 	if err != nil || asExp {
 		err = netint.CreateIndexMap(snmpConnection)
 		if err != nil {
-			sknchk.Unknown(fmt.Sprintf("Error while Creating IndexMap : %v", err), "")
+			sknchk.Unknown(fmt.Sprintf("Error while Creating IndexMap : %v (Poller : %v)", err, pollerHostname), "")
 		}
 		err = file.CreateJSONFile(file.DevicePath, "index.json", netint.IndexList)
 		if err != nil {
-			sknchk.Unknown(fmt.Sprint(err), "")
+			sknchk.Unknown(fmt.Sprintf("%v (Poller : %v)", err, pollerHostname), "")
 		}
 	}
 
 	//Check if Device directory is readable, avoid some snmp requests if the destination isn't writable
 	err = file.IsPathWritable(file.DevicePath)
 	if err != nil {
-		sknchk.Unknown(fmt.Sprint(err), "")
+		sknchk.Unknown(fmt.Sprintf("%v (Poller : %v)", err, pollerHostname), "")
 	}
 
 	var index string
@@ -148,15 +157,15 @@ func networkInterfaceCheck(snmpVersion string, cmd *cobra.Command, args []string
 		log.Debugln("No interface found, force the recreation of the index file...")
 		err = netint.CreateIndexMap(snmpConnection)
 		if err != nil {
-			sknchk.Unknown(fmt.Sprintf("Error while Creating IndexMap : %v", err), "")
+			sknchk.Unknown(fmt.Sprintf("Error while Creating IndexMap : %v (Poller : %v)", err, pollerHostname), "")
 		}
 		err = file.CreateJSONFile(file.DevicePath, "index.json", netint.IndexList)
 		if err != nil {
-			sknchk.Unknown(fmt.Sprint(err), "")
+			sknchk.Unknown(fmt.Sprintf("%v (Poller : %v)", err, pollerHostname), "")
 		}
 		index, err = file.FindIntIndex(file.DevicePath, cmd.Flag("interface").Value.String())
 		if err != nil {
-			sknchk.Unknown(fmt.Sprint(err), "")
+			sknchk.Unknown(fmt.Sprintf("%v (Poller : %v)", err, pollerHostname), "")
 		}
 	}
 
@@ -166,22 +175,31 @@ func networkInterfaceCheck(snmpVersion string, cmd *cobra.Command, args []string
 	//Retrieve interface information
 	intNewData, err = netint.FetchAllDatas(snmpConnection, index, snmpVersion, cmd)
 	if err != nil {
-		sknchk.Unknown(fmt.Sprint(err), "")
+		sknchk.Unknown(fmt.Sprintf("%v (Poller : %v)", err, pollerHostname), "")
 	}
 	err = intNewData.GetUpTime(snmpConnection)
 	if err != nil {
-		sknchk.Unknown(fmt.Sprint(err), "")
+		sknchk.Unknown(fmt.Sprintf("%v (Poller : %v)", err, pollerHostname), "")
 	}
 
-	//Check if the interface is tagged as Critical
+	//Check if the interface is tagged as Critical if alert only on critical interfaces is enable
+	//If alert only on critical interface isn't activated, all the intefaces are considered as critical
 	log.Debug("=====================")
-	var isCritical bool
-	re := regexp.MustCompile(`(<>|->|<*>|< >)`)
-	if intNewData.IfAlias != nil && re.Match([]byte(*intNewData.IfAlias)) {
-		log.Debugf("Critical interface detected : %v", *intNewData.IfAlias)
-		isCritical = true
-	} else {
-		log.Debugf("Non critical interface detected : %v", *intNewData.IfAlias)
+	var isCritical bool = true
+	log.Debugf("Alert only on critical interfaces : %v", criticalPattern)
+	if criticalPattern == "on" {
+		re := regexp.MustCompile(`(<>|->|<*>|< >)`)
+		if intNewData.IfAlias != nil {
+			if re.Match([]byte(*intNewData.IfAlias)) {
+				log.Debugf("Critical interface detected : %v", *intNewData.IfAlias)
+			} else {
+				log.Debugf("Non critical interface detected : %v", *intNewData.IfAlias)
+				isCritical = false
+			}
+		} else {
+			log.Debugf("Non critical interface detected, access to IfAlias is limited")
+			isCritical = false
+		}
 	}
 
 	//Check if interface is admin down, in this case no need to process other information.
@@ -216,7 +234,7 @@ func networkInterfaceCheck(snmpVersion string, cmd *cobra.Command, args []string
 		log.Debug("First polling, creation of the first json datas file")
 		err = file.CreateJSONFile(file.DevicePath, intFilename, *intNewData)
 		if err != nil {
-			sknchk.Unknown(fmt.Sprint(err), "")
+			sknchk.Unknown(fmt.Sprintf("%v (Poller : %v)", err, pollerHostname), "")
 		}
 		sknchk.Ok("First polling, creation of the initial datas.", "")
 	}
@@ -226,7 +244,7 @@ func networkInterfaceCheck(snmpVersion string, cmd *cobra.Command, args []string
 	intOldData := &netint.InterfaceDetails{}
 	err = mapstructure.Decode(data, &intOldData)
 	if err != nil {
-		sknchk.Unknown(fmt.Sprint(err), "")
+		sknchk.Unknown(fmt.Sprintf("%v (Poller : %v)", err, pollerHostname), "")
 	}
 
 	var sysUpTime time.Duration
@@ -300,7 +318,7 @@ func networkInterfaceCheck(snmpVersion string, cmd *cobra.Command, args []string
 	log.Debug("===== Write New Data to JSON file =====")
 	err = file.CreateJSONFile(file.DevicePath, intFilename, *intNewData)
 	if err != nil {
-		sknchk.Unknown(fmt.Sprint(err), "")
+		sknchk.Unknown(fmt.Sprintf("%v (Poller : %v)", err, pollerHostname), "")
 	}
 
 	switch chk.Rc() {
@@ -335,7 +353,7 @@ func networkInterfaceCheck(snmpVersion string, cmd *cobra.Command, args []string
 		}
 		tableHTML, err = ui.GenerateHTMLTable(intNewData, thresholds)
 		if err != nil {
-			sknchk.Unknown(fmt.Sprint(err), "")
+			sknchk.Unknown(fmt.Sprintf("%v (Poller : %v)", err, pollerHostname), "")
 		}
 		chk.AddLong(tableHTML, false)
 	}
