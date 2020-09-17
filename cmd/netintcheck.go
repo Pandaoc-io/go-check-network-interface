@@ -188,7 +188,7 @@ func networkInterfaceCheck(snmpVersion string, cmd *cobra.Command, args []string
 	var isCritical bool = true
 	log.Debugf("Alert only on critical interfaces : %v", criticalPattern)
 	if criticalPattern == "on" {
-		re := regexp.MustCompile(`(<>|->|<*>|< >)`)
+		re := regexp.MustCompile(`(<>|->|<\*>|< >)`)
 		if intNewData.IfAlias != nil {
 			if re.Match([]byte(*intNewData.IfAlias)) {
 				log.Debugf("Critical interface detected : %v", *intNewData.IfAlias)
