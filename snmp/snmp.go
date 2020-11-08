@@ -46,9 +46,9 @@ func CreateConnection(version string, cmd *cobra.Command) (*g.GoSNMP, error) {
 	case "3":
 		params.Version = g.Version3
 		params.SecurityModel = g.UserSecurityModel
-		var authProto g.SnmpV3AuthProtocol = g.SHA
-		var privProto g.SnmpV3PrivProtocol = g.AES
-		var secLevel g.SnmpV3MsgFlags = g.AuthPriv
+		var authProto = g.SHA
+		var privProto = g.AES
+		var secLevel = g.AuthPriv
 
 		switch cmd.Flag("auth-protocol").Value.String() {
 		case "MD5":

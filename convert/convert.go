@@ -32,7 +32,7 @@ func HumanReadable(value float64, base float64, suffix string) string {
 		div *= base
 		exp++
 	}
-	return fmt.Sprintf("%.2f %c%v", float64(value)/float64(div), "kMGTPE"[exp], suffix)
+	return fmt.Sprintf("%.2f %c%v", value/div, "kMGTPE"[exp], suffix)
 }
 
 //ToUint convert int and uint types to uint
@@ -49,7 +49,7 @@ func ToUint(value interface{}) (uint, error) {
 	case int64:
 		return uint(value), nil
 	case uint:
-		return uint(value), nil
+		return value, nil
 	case uint8:
 		return uint(value), nil
 	case uint16:
@@ -59,13 +59,13 @@ func ToUint(value interface{}) (uint, error) {
 	case uint64:
 		return uint(value), nil
 	case *uint:
-		return uint(*value), nil
+		return *value, nil
 	case *uint32:
 		return uint(*value), nil
 	case *uint64:
 		return uint(*value), nil
 	default:
-		return 0, fmt.Errorf("Unsupported Type %T for Float64 conversion", value)
+		return 0, fmt.Errorf("unsupported Type %T for Float64 conversion", value)
 	}
 }
 
@@ -97,6 +97,6 @@ func ToFloat(value interface{}) (float64, error) {
 	case float64:
 		return value, nil
 	default:
-		return 0, fmt.Errorf("Unsupported Type %T for Float64 conversion", value)
+		return 0, fmt.Errorf("unsupported Type %T for Float64 conversion", value)
 	}
 }

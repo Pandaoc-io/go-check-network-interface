@@ -18,8 +18,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-var ifEntryBaseOid string = ".1.3.6.1.2.1.2.2.1"
-var ifXEntryBaseOid string = ".1.3.6.1.2.1.31.1.1.1"
+var ifEntryBaseOid = ".1.3.6.1.2.1.2.2.1"
+var ifXEntryBaseOid = ".1.3.6.1.2.1.31.1.1.1"
 
 //InterfaceOids containe all the OIDs used to grab the interface information
 var InterfaceOids = map[string]string{

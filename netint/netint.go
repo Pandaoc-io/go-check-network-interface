@@ -174,7 +174,7 @@ func (i *InterfaceDetails) GetUpTime(snmpConnection *g.GoSNMP) error {
 	oid := []string{InterfaceOids["HrSystemUptime"], InterfaceOids["SysUpTime"]}
 	result, err := snmpConnection.Get(oid)
 	if err != nil {
-		return fmt.Errorf("Get() UpTime err: %v", err)
+		return fmt.Errorf("get() UpTime err: %v", err)
 	}
 
 	for _, variable := range result.Variables {

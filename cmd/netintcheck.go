@@ -39,7 +39,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func networkInterfaceCheck(snmpVersion string, cmd *cobra.Command, args []string) {
+func networkInterfaceCheck(snmpVersion string, cmd *cobra.Command) {
 	//Discard thresholds
 	dcflag, _ := cmd.Flags().GetString("discard-critical")
 	dwflag, _ := cmd.Flags().GetString("discard-warning")
@@ -173,7 +173,7 @@ func networkInterfaceCheck(snmpVersion string, cmd *cobra.Command, args []string
 	chk := &sknchk.Check{}
 
 	//Retrieve interface information
-	intNewData, err = netint.FetchAllDatas(snmpConnection, index, snmpVersion, cmd)
+	intNewData, err = netint.FetchAllDatas(snmpConnection, index)
 	if err != nil {
 		sknchk.Unknown(fmt.Sprintf("%v (Poller : %v)", err, pollerHostname), "")
 	}
@@ -185,7 +185,7 @@ func networkInterfaceCheck(snmpVersion string, cmd *cobra.Command, args []string
 	//Check if the interface is tagged as Critical if alert only on critical interfaces is enable
 	//If alert only on critical interface isn't activated, all the intefaces are considered as critical
 	log.Debug("=====================")
-	var isCritical bool = true
+	var isCritical = true
 	log.Debugf("Alert only on critical interfaces : %v", criticalPattern)
 	if criticalPattern == "on" {
 		re := regexp.MustCompile(`(<>|->|<\*>|< >)`)

@@ -89,14 +89,14 @@ func CreateJSONFile(devicePath string, filename string, datas interface{}) error
 	}
 	datasBytes, err := json.MarshalIndent(datas, "", "    ")
 	if err != nil {
-		return fmt.Errorf("Can't Marshal the datas : %v, Datas : %#v", err, datas)
+		return fmt.Errorf("can't Marshal the datas : %v, Datas : %#v", err, datas)
 	}
 	jsonStr := string(datasBytes)
 	log.Debug("The JSON data is : ", jsonStr)
 
 	err = ioutil.WriteFile(path.Join(devicePath, filename), datasBytes, 0644)
 	if err != nil {
-		return fmt.Errorf("Can't create the file : %v", err)
+		return fmt.Errorf("can't create the file : %v", err)
 	}
 	return nil
 
@@ -144,14 +144,14 @@ func FindIntIndex(devicePath string, name string) (string, error) {
 	log.Debugln("===== Search of the interface Index =====")
 	jsonFile, err := os.Open(path.Join(devicePath, "index.json"))
 	if err != nil {
-		return "", fmt.Errorf("Find Interface Index: %v", err)
+		return "", fmt.Errorf("cind Interface Index: %v", err)
 	}
 	// defer the closing of our jsonFile so that we can parse it later on
 	defer jsonFile.Close()
 
 	byteValue, _ := ioutil.ReadAll(jsonFile)
 	var indexMap map[string]interface{}
-	json.Unmarshal([]byte(byteValue), &indexMap)
+	json.Unmarshal(byteValue, &indexMap)
 
 	for k, v := range indexMap {
 		value := v.(map[string]interface{})
@@ -160,7 +160,7 @@ func FindIntIndex(devicePath string, name string) (string, error) {
 			return k, nil
 		}
 	}
-	return "", fmt.Errorf("Index for interface %v not found", name)
+	return "", fmt.Errorf("index for interface %v not found", name)
 }
 
 //ReadJSONIntFile will read the interface values from the interface JSON file and generate the corresponding struct
@@ -168,13 +168,13 @@ func ReadJSONIntFile(devicePath string, filename string) (interface{}, error) {
 	fullPath := path.Join(devicePath, filename)
 	jsonFile, err := os.Open(fullPath)
 	if err != nil {
-		return "", fmt.Errorf("Find Interface Index: %v", err)
+		return "", fmt.Errorf("find Interface Index: %v", err)
 	}
 	// defer the closing of our jsonFile so that we can parse it later on
 	defer jsonFile.Close()
 
 	byteValue, _ := ioutil.ReadAll(jsonFile)
 	var elements netint.InterfaceDetails
-	json.Unmarshal([]byte(byteValue), &elements)
+	json.Unmarshal(byteValue, &elements)
 	return elements, nil
 }

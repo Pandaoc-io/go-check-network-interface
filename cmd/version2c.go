@@ -28,7 +28,7 @@ var version2cCmd = &cobra.Command{
 	Short: "SNMP request in version 2c",
 	Long:  `Poll the interface information in SNMP version 2c`,
 	Run: func(cmd *cobra.Command, args []string) {
-		networkInterfaceCheck("2c", cmd, args)
+		networkInterfaceCheck("2c", cmd)
 	},
 }
 

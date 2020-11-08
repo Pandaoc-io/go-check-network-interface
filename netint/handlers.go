@@ -31,14 +31,13 @@ import (
 	sknchk "github.com/pandaoc-io/go-shinken-check"
 	log "github.com/sirupsen/logrus"
 	g "github.com/soniah/gosnmp"
-	"github.com/spf13/cobra"
 )
 
 //IndexList is the variable to strore interface index information to generate the json index file per interface
 var IndexList map[int]map[string]string
 
 //BwInconsistency is used to keep the Bandwith inconsistency status and used it to reset the pckt calculation part
-var BwInconsistency bool = false
+var BwInconsistency = false
 
 //CreateIndexMap create the map of ifDescr and ifName per index found
 func CreateIndexMap(snmpConnection *g.GoSNMP) error {
@@ -72,7 +71,7 @@ func CreateIndexMap(snmpConnection *g.GoSNMP) error {
 }
 
 //FetchAllDatas grab all the interface details by SNMP
-func FetchAllDatas(snmpConnection *g.GoSNMP, index string, version string, cmd *cobra.Command) (*InterfaceDetails, error) {
+func FetchAllDatas(snmpConnection *g.GoSNMP, index string) (*InterfaceDetails, error) {
 
 	networkinterface := &InterfaceDetails{}
 	networkinterface.Index = new(int)
@@ -117,7 +116,7 @@ func FetchAllDatas(snmpConnection *g.GoSNMP, index string, version string, cmd *
 			*networkinterface.IfAlias = strings.ReplaceAll(*networkinterface.IfAlias, "|", "!")
 		}
 	}
-	networkinterface.Timestamp = (time.Now().Unix())
+	networkinterface.Timestamp = time.Now().Unix()
 
 	return networkinterface, nil
 }
