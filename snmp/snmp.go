@@ -51,18 +51,18 @@ func CreateConnection(version string, cmd *cobra.Command) (*g.GoSNMP, error) {
 		var secLevel g.SnmpV3MsgFlags = g.AuthPriv
 
 		switch cmd.Flag("auth-protocol").Value.String() {
-		case "MD5":
+		case "MD5", "md5":
 			authProto = g.MD5
-		case "SHA":
+		case "SHA", "sha":
 			authProto = g.SHA
 		default:
 			return nil, fmt.Errorf("%v is not a valid authentication protocol, check usage", cmd.Flag("auth-protocol").Value.String())
 		}
 
 		switch cmd.Flag("priv-protocol").Value.String() {
-		case "DES":
+		case "DES", "des":
 			privProto = g.DES
-		case "AES":
+		case "AES", "aes":
 			privProto = g.AES
 		default:
 			return nil, fmt.Errorf("%v is not a valid privacy protocol, check usage", cmd.Flag("priv-protocol").Value.String())
