@@ -49,24 +49,42 @@ func CliSummary(intNewData *netint.InterfaceDetails, chk *sknchk.Check) {
 	chk.AddShort(fmt.Sprintf("Total pkts In : %.2f pps", *intNewData.IfInTotalPktsRate), true)
 	chk.AddShort(fmt.Sprintf("Total pkts Out : %.2f pps", *intNewData.IfOutTotalPktsRate), true)
 
-	if intNewData.InUniPcktRate != nil || intNewData.InMultiPcktRate != nil {
-		if intNewData.InBroadPcktRate != nil {
-			chk.AddShort(fmt.Sprintf("In : Uni : %.2f pps, Multi : %.2f pps, Broad :%.2f pps", *intNewData.InUniPcktRate, *intNewData.InMultiPcktRate, *intNewData.InBroadPcktRate), true)
-		} else {
-			chk.AddShort(fmt.Sprintf("In : Uni : %.2f pps, Multi/Broad : %.2f pps", *intNewData.InUniPcktRate, *intNewData.InMultiPcktRate), true)
-		}
+	if intNewData.InUniPcktRate != nil {
+		chk.AddShort(fmt.Sprintf("In Uni : %.2f pps", *intNewData.InUniPcktRate), true)
 	} else {
-		chk.AddShort("In Uni/Multi/Broadcast packets : Can't be determined", true)
+		chk.AddShort("In Uni : Can't be determined", true)
 	}
-	if intNewData.OutUniPcktRate != nil || intNewData.OutMultiPcktRate != nil {
-		if intNewData.OutBroadPcktRate != nil {
-			chk.AddShort(fmt.Sprintf("Out : Uni : %.2f pps, Multi : %.2f pps, Broad :%.2f pps", *intNewData.OutUniPcktRate, *intNewData.OutMultiPcktRate, *intNewData.OutBroadPcktRate), true)
-		} else {
-			chk.AddShort(fmt.Sprintf("Out : Uni : %.2f pps, Multi/Broad : %.2f pps", *intNewData.OutUniPcktRate, *intNewData.OutMultiPcktRate), true)
-		}
+
+	if intNewData.InMultiPcktRate != nil {
+		chk.AddShort(fmt.Sprintf("In : Multi : %.2f pps", *intNewData.InMultiPcktRate), true)
 	} else {
-		chk.AddShort("Out Uni/Multi/Broadcast packets : Can't be determined", true)
+		chk.AddShort("In Multi : Can't be determined", true)
 	}
+
+	if intNewData.InBroadPcktRate != nil {
+		chk.AddShort(fmt.Sprintf("In Broad : %.2f pps", *intNewData.InBroadPcktRate), true)
+	} else {
+		chk.AddShort("In Broad : Can't be determined", true)
+	}
+
+	if intNewData.OutUniPcktRate != nil {
+		chk.AddShort(fmt.Sprintf("Out Uni : %.2f pps", *intNewData.OutUniPcktRate), true)
+	} else {
+		chk.AddShort("Out Uni : Can't be determined", true)
+	}
+
+	if intNewData.OutMultiPcktRate != nil {
+		chk.AddShort(fmt.Sprintf("Out Multi : %.2f pps", *intNewData.OutMultiPcktRate), true)
+	} else {
+		chk.AddShort("Out Multi : Can't be determined", true)
+	}
+
+	if intNewData.OutBroadPcktRate != nil {
+		chk.AddShort(fmt.Sprintf("Out Broad : %.2f pps", *intNewData.OutBroadPcktRate), true)
+	} else {
+		chk.AddShort("Out Broad : Can't be determined", true)
+	}
+
 	var inRateStr string
 	if intNewData.IfInRate != nil {
 		inRateStr = fmt.Sprintf("In BW : %v", convert.HumanReadable(*intNewData.IfInRate, 1024, "bits/sec"))
@@ -84,7 +102,7 @@ func CliSummary(intNewData *netint.InterfaceDetails, chk *sknchk.Check) {
 
 	var outRateStr string
 	if intNewData.IfOutRate != nil {
-		outRateStr = fmt.Sprintf("In BW : %v", convert.HumanReadable(*intNewData.IfOutRate, 1024, "bits/sec"))
+		outRateStr = fmt.Sprintf("Out BW : %v", convert.HumanReadable(*intNewData.IfOutRate, 1024, "bits/sec"))
 	} else {
 		outRateStr = "Out BW : Rate can't be determined"
 	}
