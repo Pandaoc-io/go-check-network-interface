@@ -99,7 +99,6 @@ func CreateJSONFile(devicePath string, filename string, datas interface{}) error
 		return fmt.Errorf("Can't create the file : %v", err)
 	}
 	return nil
-
 }
 
 //GenDeviceDirName will string the full path used to read/write the interface information

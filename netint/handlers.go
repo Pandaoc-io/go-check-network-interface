@@ -715,7 +715,15 @@ func Speed(intNewData *InterfaceDetails, chk *sknchk.Check) {
 	var speed uint
 	if intNewData.IfHighSpeed != nil {
 		log.Debug("ifHighSpeed found")
-		speed = *intNewData.IfHighSpeed * 1000000
+		if *intNewData.IfHighSpeed == 1 {
+			log.Debug("ifHighSpeed is equal to 1Mb, we check if the ifSpeed is lower than 1Mb.")
+			if intNewData.IfSpeed != nil && *intNewData.IfSpeed < 1000000 {
+				log.Debugf("ifSpeed value is inferior to 1Mb, keep ifSpeed as speed value : %v bps", *intNewData.IfSpeed)
+				speed = *intNewData.IfSpeed
+			}
+		} else {
+			speed = *intNewData.IfHighSpeed * 1000000
+		}
 	} else if intNewData.IfSpeed != nil {
 		log.Debug("No ifHighSpeed found, switch to ifSpeed")
 		if *intNewData.IfSpeed == math.MaxUint32 {
