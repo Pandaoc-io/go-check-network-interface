@@ -34,7 +34,7 @@ import (
 )
 
 //CheckPath is the global path where all the files read/write by the check will be hosted
-const CheckPath = "/var/tmp/check_snmp_interface_foreach"
+const CheckPath = "/var/tmp/go_check_snmp_interface_foreach"
 
 //DevicePath is the path where is will be stored all the JSON files of the device
 var DevicePath string
@@ -99,7 +99,6 @@ func CreateJSONFile(devicePath string, filename string, datas interface{}) error
 		return fmt.Errorf("Can't create the file : %v", err)
 	}
 	return nil
-
 }
 
 //GenDeviceDirName will string the full path used to read/write the interface information

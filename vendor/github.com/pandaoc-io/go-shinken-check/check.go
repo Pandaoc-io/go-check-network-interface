@@ -84,7 +84,7 @@ func (o *OutputMode) Mode() string {
 func (o *OutputMode) SetHTML() {
 	Output.mode = "html"
 	Output.newLine = "<br />"
-	Output.bullet = "&#8226;&#8194;"
+	Output.bullet = "&#8194;&#8226;&#8194;"
 	Output.classOk = "color: #28a745!important;"
 	Output.classWarning = "color: #947600!important;"
 	Output.classCritical = "color: #dc3545!important;"
@@ -211,6 +211,11 @@ func Unknown(short string, long string) {
 	}
 	check := &Check{[]string{short}, sLong, nil, []Status{RcUnknwon}}
 	Exit(check)
+}
+
+//ForceRc will force the return code of the check to the one given in argument
+func (c *Check) ForceRc(rc Status) {
+	c.rc = []Status{rc}
 }
 
 //Rc return the Return Code of the check

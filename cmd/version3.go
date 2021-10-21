@@ -36,10 +36,10 @@ func init() {
 	rootCmd.AddCommand(version3Cmd)
 
 	version3Cmd.Flags().StringP("username", "u", "admin", "Username used for SNMP v3 authentication.")
-	version3Cmd.Flags().StringP("auth-protocol", "a", "SHA", "Authentication protocol (MD5|SHA|SHA-224|SHA-256|SHA-384|SHA-512).")
+	version3Cmd.Flags().StringP("auth-protocol", "a", "SHA", "Authentication protocol, can be in Upper or Lower case (MD5|SHA|SHA-224|SHA-256|SHA-384|SHA-512).")
 	version3Cmd.Flags().StringP("auth-passphrase", "A", "passphrase", "Authentication passphrase.")
 	version3Cmd.Flags().StringP("sec-level", "l", "authPriv", "Security level (noAuthNoPriv|authNoPriv|authPriv).")
 	version3Cmd.Flags().StringP("context", "n", "", "Context name.")
-	version3Cmd.Flags().StringP("priv-protocol", "x", "AES", "Privacy protocol (DES|AES).")
+	version3Cmd.Flags().StringP("priv-protocol", "x", "AES", "Privacy protocol, can be in Upper or Lower case (DES|AES).")
 	version3Cmd.Flags().StringP("priv-passphrase", "X", "passphrase", "Privacy passphrase.")
 }

@@ -22,6 +22,7 @@ import (
 	"bytes"
 	"fmt"
 	"html/template"
+	"regexp"
 	"strings"
 
 	"go-check-network-interface/convert"
@@ -30,13 +31,13 @@ import (
 
 //TableTmpl is the HTML code to generate the table into the long output
 const TableTmpl = `
-<table style="width: 90%; border-collapse: collapse; border-color: #000000; margin-left: auto; margin-right: auto; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; background-color: white;" border="1">
+<table style="width: 90%; border-collapse: collapse; border-color: #000000; margin-left: auto; margin-right: auto; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; background-color: white; white-space: nowrap; margin-top: 10px; margin-bottom: 10px;" border="1">
             <tbody>
               <tr>
                 <th colspan="6" style="color: #2160c4; background-color: #eef3fc; padding: 5px; text-align: center;">Name : {{if .IfName}}{{.IfName}}{{else}}No name found{{end}} - Desc : {{if .IfDescr}}{{.IfDescr}}{{else}}No description found{{end}}</th>
               </tr>
               <tr>
-                <th colspan="6" style="color: #1d72aa; background-color: #eef6fc; padding: 5px; text-align: center;">Alias : {{if .IfAlias}}{{if eq (len .IfAlias) 0 }}Alias is empty{{else}}{{.IfAlias}}{{end}}{{else}}No alias found{{end}}</th>
+                <th colspan="6" style="color: #1d72aa; background-color: #eef6fc; padding: 5px; text-align: center;">Alias : {{if .IfAlias}}{{if eq (len .IfAlias) 0 }}Alias is empty{{else}}{{.IfAlias}}{{end}}{{else}}No alias found{{end}}{{if IsCritical}} <span style="font-size: large; color: #721c24">&#9762;</span> <span style="color: #721c24">Critical interface detected</span> <span style="font-size: large; color: #721c24">&#9762;</span>{{end}}</th>
               </tr>
               <tr style="background-color: rgba(0,0,0,.075);">
                 <th colspan="2" style="padding: 5px;">Oper Status</th>
@@ -77,24 +78,24 @@ const TableTmpl = `
                 <th style="padding: 5px;">Usage Critical<br>threshold</th>
               </tr>
               <tr>
-                {{if .IfInPrct -}}
+                {{if .IfInRate -}}
                 {{if eq (CompPnF .IfInPrct BwCritThreshold) 1 -}}
-                  <td colspan="2" style="background-color: #f8d7da; color: #721c24; padding: 5px;">{{if .IfInRate}}{{HumanBps .IfInRate}}{{end}} &#11020; {{Float2f .IfInPrct}} %</td>
+                  <td colspan="2" style="background-color: #f8d7da; color: #721c24; padding: 5px;">{{if .IfInRate}}{{HumanBps .IfInRate}}{{end}}{{if .IfInPrct}} &#11020; {{Float2f .IfInPrct}} %{{end}}</td>
                 {{else if eq (CompPnF .IfInPrct BwWarnThreshold) 1 -}}
-                  <td colspan="2" style="background-color: #fff3cd; color: #856404; padding: 5px;">{{if .IfInRate}}{{HumanBps .IfInRate}}{{end}} &#11020;  {{Float2f .IfInPrct}} %</td>
+                  <td colspan="2" style="background-color: #fff3cd; color: #856404; padding: 5px;">{{if .IfInRate}}{{HumanBps .IfInRate}}{{end}}{{if .IfInPrct}} &#11020;  {{Float2f .IfInPrct}} %{{end}}</td>
                 {{else -}}
-                  <td colspan="2" style="background-color: #d4edda; color: #155724; padding: 5px;">{{if .IfInRate}}{{HumanBps .IfInRate}}{{end}} &#11020; {{Float2f .IfInPrct}} %</td>
+                  <td colspan="2" style="background-color: #d4edda; color: #155724; padding: 5px;">{{if .IfInRate}}{{HumanBps .IfInRate}}{{end}}{{if .IfInPrct}} &#11020; {{Float2f .IfInPrct}} %{{end}}</td>
                 {{end -}}
                 {{else -}}
                 <td colspan="2" style="padding: 5px;">N/A</td>
                 {{end -}}
-                {{if .IfOutPrct -}}
+                {{if .IfOutRate -}}
                 {{if eq (CompPnF .IfOutPrct BwCritThreshold) 1 -}}
-                  <td colspan="2" style="background-color: #f8d7da; color: #721c24; padding: 5px;">{{if .IfOutRate}}{{HumanBps .IfOutRate}}{{end}} &#11020; {{Float2f .IfOutPrct}} %</td>
+                  <td colspan="2" style="background-color: #f8d7da; color: #721c24; padding: 5px;">{{if .IfOutRate}}{{HumanBps .IfOutRate}}{{end}}{{if .IfOutPrct}} &#11020; {{Float2f .IfOutPrct}} %{{end}}</td>
                 {{else if eq (CompPnF .IfOutPrct BwWarnThreshold) 1 -}}
-                  <td colspan="2" style="background-color: #fff3cd; color: #856404; padding: 5px;">{{if .IfOutRate}}{{HumanBps .IfOutRate}}{{end}} &#11020; {{Float2f .IfOutPrct}} %</td>
+                  <td colspan="2" style="background-color: #fff3cd; color: #856404; padding: 5px;">{{if .IfOutRate}}{{HumanBps .IfOutRate}}{{end}}{{if .IfOutPrct}} &#11020; {{Float2f .IfOutPrct}} %{{end}}</td>
                 {{else -}}
-                  <td colspan="2" style="background-color: #d4edda; color: #155724; padding: 5px;">{{if .IfOutRate}}{{HumanBps .IfOutRate}}{{end}} &#11020; {{Float2f .IfOutPrct}} %</td>
+                  <td colspan="2" style="background-color: #d4edda; color: #155724; padding: 5px;">{{if .IfOutRate}}{{HumanBps .IfOutRate}}{{end}}{{if .IfOutPrct}} &#11020; {{Float2f .IfOutPrct}} %{{end}}</td>
                 {{end -}}
                 {{else -}}
                 <td colspan="2" style="padding: 5px;">N/A</td>
@@ -238,8 +239,15 @@ func GenerateHTMLTable(intNewData *netint.InterfaceDetails, threshold *Threshold
 			}
 			return "N/A"
 		},
-		"HumanBps":         func(f float64) string { return convert.HumanReadable(f, "bits/sec") },
-		"HumanSpeed":       func() string { return convert.HumanReadable(float64(*intNewData.SpeedInbit), "bps") },
+		"IsCritical": func() bool {
+			re := regexp.MustCompile(`(<>|->|<*>|< >)`)
+			if intNewData.IfAlias == nil {
+				return false
+			}
+			return re.Match([]byte(*intNewData.IfAlias))
+		},
+		"HumanBps":         func(f float64) string { return convert.HumanReadable(f, 1024, "bits/sec") },
+		"HumanSpeed":       func() string { return convert.HumanReadable(float64(*intNewData.SpeedInbit), 1000, "bps") },
 		"BwCritThreshold":  func() float64 { return threshold.Bc },
 		"BwWarnThreshold":  func() float64 { return threshold.Bw },
 		"ErrCritThreshold": func() float64 { return threshold.Ec },
@@ -259,6 +267,9 @@ func GenerateHTMLTable(intNewData *netint.InterfaceDetails, threshold *Threshold
 			return "%"
 		},
 		"CompPnF": func(f1 *float64, f2 float64) int {
+			if f1 == nil {
+				return -1
+			}
 			if *f1 > f2 {
 				return 1
 			} else if *f1 == f2 {
